@@ -13,31 +13,33 @@ List<Teilnehmer> erstelleTeilnehmerListe() {
     Teilnehmer(
       vorname: 'Max',
       nachname: 'Mustermann',
+      geschlecht: Geschlecht.m,
       geburtsdatum: DateTime(2000, 1, 1),
     ),
     Teilnehmer(
       vorname: 'Anna',
       nachname: 'Schmidt',
-      geschlecht: 'weiblich',
+      geschlecht: Geschlecht.w,
       geburtsdatum: DateTime(1998, 3, 14),
       abschlussnote: 2,
     ),
     Teilnehmer(
       vorname: 'Mehmet',
       nachname: 'Yilmaz',
-      geschlecht: 'männlich',
+      geschlecht: Geschlecht.m,
       geburtsdatum: DateTime(2001, 7, 22),
     ),
     Teilnehmer(
       vorname: 'Alex',
       nachname: 'Meyer',
+      geschlecht: Geschlecht.m,
       geburtsdatum: DateTime(1995, 11, 5),
       abschlussnote: 1,
     ),
     Teilnehmer(
       vorname: 'Sophie',
       nachname: 'Wagner',
-      geschlecht: 'weiblich',
+      geschlecht: Geschlecht.w,
       geburtsdatum: DateTime(2003, 1, 30),
     ),
   ];
@@ -49,17 +51,14 @@ void ausgabeTeilnehmerListe(List<Teilnehmer> teilnehmer) {
   for (int i = 0; i < teilnehmer.length; i++) {
     print('Vorname: ${teilnehmer[i].vorname}');
     print('Nachname: ${teilnehmer[i].nachname}');
-
-    if (teilnehmer[i].geschlecht != null) {
-      print('Geschlecht: ${teilnehmer[i].geschlecht}');
-    }
+    print('Geschlecht: ${teilnehmer[i].geschlecht}');
 
     print('Alter: ${berechneAlter(teilnehmer[i])}');
 
     if (teilnehmer[i].abschlussnote != null) {
       print('Abschlussnote: ${teilnehmer[i].abschlussnote}');
     }
-
+    print('${teilnehmer[i].zutrittsberechtigung.zutrittsberechtigungsId}');
     print('');
   }
 }
