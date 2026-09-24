@@ -1,14 +1,25 @@
 import 'dart:io';
 
+import 'package:oop4/kurs.dart';
 import 'package:oop4/teilnehmer.dart';
-import 'package:path/path.dart';
 
 void main() {
-  final teilnehmer = erstelleTeilnehmerListe();
-  ausgabeTeilnehmerListe(teilnehmer);
+  final kurs = Kurs(
+    kursArt: KursArt.fiae,
+    startTermin: DateTime(2026, 7, 10),
+    kursDauerMonate: 24,
+  );
+
+  final teilnehmer = erstelleTeilnehmer();
+
+  kurs.teilnehmerHinzufuegen(teilnehmer);
+  
+  for (int i = 0; i < kurs.teilnehmerListe.length; i++) {
+    print(kurs.teilnehmerListe[i].vorname);
+  }
 }
 
-List<Teilnehmer> erstelleTeilnehmerListe() {
+List<Teilnehmer> erstelleTeilnehmerListeTest() {
   final teilnehmer = <Teilnehmer>[
     Teilnehmer(
       vorname: 'Max',
@@ -78,61 +89,80 @@ int berechneAlter(Teilnehmer teilnehmer) {
 
   return alter;
 }
-/*
+
 Teilnehmer erstelleTeilnehmer() {
   print('Füge Teilnehmer hinzu.');
 
   String? vorname;
-
   while (vorname == null || vorname.trim().isEmpty) {
     stdout.write('Vorname: ');
     vorname = stdin.readLineSync();
   }
 
   String? nachname;
-
   while (nachname == null || nachname.trim().isEmpty) {
     stdout.write('Nachname: ');
     nachname = stdin.readLineSync();
   }
 
   String? geschlecht;
-
-  stdout.write('Geschlecht (optional): ');
+  stdout.write('Geschlecht: ');
   geschlecht = stdin.readLineSync();
-
   geschlecht = geschlecht?.trim().toLowerCase();
 
-  while (geschlecht != '' && geschlecht != 'w' && geschlecht != 'm' && geschlecht != 'd') {
-    print('Gültige Eingaben: ENTER, (w), (m), (d).');
-    stdout.write('Geschlecht(optional): ');
+  while (geschlecht != 'w' && geschlecht != 'm' && geschlecht != 'd') {
+    print('Gültige Eingaben: (w), (m), (d).');
+    stdout.write('Geschlecht: ');
     geschlecht = stdin.readLineSync();
     geschlecht = geschlecht?.trim().toLowerCase();
   }
 
-  switch (geschlecht) {
-    case 'w':
-      geschlecht = 'weiblich';
-      break;
-    case 'm':
-      geschlecht = 'männlich';
-      break;
-    case 'd':
-      geschlecht = 'divers';
-      break;
-    case '':
-      geschlecht = null;
-      break;
-  }
+  final geschlechtEnum = switch (geschlecht) {
+    'w' => Geschlecht.w,
+    'm' => Geschlecht.m,
+    'd' => Geschlecht.d,
+    _ => throw StateError('Ungültiger Wert für Geschlecht'),
+  };
 
-  String? geburtsdatum;
-
-  while (geburtsdatum == null || geburtsdatum.trim().isEmpty) {
+  DateTime geburtsdatum;
+  while (true) {
     stdout.write('Geburtsdatum (TT.MM.JJJJ): ');
-    geburtsdatum = stdin.readLineSync();
+    final eingabe = stdin.readLineSync();
 
-    geburtsdatum.split('.');
+    if (eingabe == null || eingabe.trim().isEmpty) {
+      print('Bitte ein gültiges Datum im Format TT.MM.JJJJ eingeben.');
+      continue;
+    }
+
+    try {
+      final teile = eingabe.trim().split('.');
+      if (teile.length != 3) {
+        throw const FormatException();
+      }
+
+      final tag = int.parse(teile[0]);
+      final monat = int.parse(teile[1]);
+      final jahr = int.parse(teile[2]);
+      final pruefDatum = DateTime(jahr, monat, tag);
+
+      if ((pruefDatum.year == jahr &&
+          pruefDatum.month == monat &&
+          pruefDatum.day == tag) 
+          && pruefDatum.isBefore(DateTime.now())) {
+        geburtsdatum = pruefDatum;
+        break;
+      }
+
+      print('Bitte ein gültiges Datum im Format TT.MM.JJJJ eingeben.');
+    } on FormatException {
+      print('Bitte ein gültiges Datum im Format TT.MM.JJJJ eingeben.');
+    }
   }
 
+  return Teilnehmer(
+    vorname: vorname.trim(),
+    nachname: nachname.trim(),
+    geschlecht: geschlechtEnum,
+    geburtsdatum: geburtsdatum,
+  );
 }
-*/
