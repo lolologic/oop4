@@ -1,9 +1,9 @@
 import 'kurs.dart';
 
 class Cdemy {
-  List<Kurs> kurse = <Kurs>[];
+  List<Kurs> kursListe = <Kurs>[];
 
-  void kursHinzufuegen(Kurs kurse) {
-
+  void kursHinzufuegen(Kurs kurs) {
+    kursListe.add(kurs);
   }
 }
