@@ -6,14 +6,94 @@ import 'package:oop4/teilnehmer.dart';
 
 void main() {
   final cdemy = Cdemy();
-  final kurs = erstelleKurs();
-  cdemy.kursHinzufuegen(kurs);
 
-  final teilnehmer = erstelleTeilnehmer();
-  kurs.teilnehmerHinzufuegen(teilnehmer);
+  while (true) {
+    String? menue;
 
-  ausgabeKursListe(cdemy.kursListe);
-  ausgabeTeilnehmerListe(kurs.teilnehmerListe);
+    print('Hauptmenü');
+    print('1 - Kurs hinzufügen');
+    print('2 - Teilnehmer hinzufügen');
+    print('3 - Kurse anzeigen');
+    print('4 - Teilnehmer anzeigen');
+    print('0 - Beenden');
+    print('');
+    stdout.write('Auswahl: ');
+    menue = stdin.readLineSync();
+
+    switch (menue) {
+      case '1':
+        while (true) {
+          menue = null;
+          final kurs = erstelleKurs();
+          cdemy.kursHinzufuegen(kurs);
+
+          while (menue != '0' && menue != '1') {
+            print('');
+            print('1 - Weiteren Kurs hinzufügen');
+            print('0 - Zurück zum Hauptmenü');
+            stdout.write('Auswahl: ');
+            menue = stdin.readLineSync();
+
+            if (menue != null) {
+              menue = menue.trim();
+            }
+
+            if (menue == '0') {
+              break;
+            } else if (menue == '1') {
+              break;
+            } else {
+              print('Ungültige Eingabe.');
+              continue;
+            }
+          }
+
+          if (menue == '0') {
+            break;
+          }
+        }
+      case '2':
+        while (true) {
+          menue = null;
+          final teilnehmer = erstelleTeilnehmer();
+
+          kurs.teilnehmerHinzufuegen(teilnehmer);
+
+          while (menue != '0' && menue != '1') {
+            print('');
+            print('1 - Weiteren Teilnehmer hinzufügen');
+            print('0 - Zurück zum Hauptmenü');
+            stdout.write('Auswahl: ');
+            menue = stdin.readLineSync();
+
+            if (menue != null) {
+              menue = menue.trim();
+            }
+
+            if (menue == '0') {
+              break;
+            } else if (menue == '1') {
+              break;
+            } else {
+              print('Ungültige Eingabe.');
+              continue;
+            }
+          }
+
+          if (menue == '0') {
+            break;
+          }
+        }
+      case '3':
+        ausgabeKursListe(cdemy.kursListe);
+      case '4':
+        ausgabeTeilnehmerListe(kurs.teilnehmerListe);
+      case '0':
+        break;
+      default:
+        print('Ungültige Eingabe.');
+    }
+  }
 }
 
 void ausgabeKursListe(List<Kurs> kursListe) {
