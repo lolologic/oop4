@@ -8,97 +8,322 @@ void main() {
   final cdemy = Cdemy();
 
   while (true) {
-    String? menue;
-
     print('Hauptmenü');
-    print('1 - Kurs hinzufügen');
-    print('2 - Teilnehmer hinzufügen');
+    print('1 - Kurse verwalten');
+    print('2 - Teilnehmer verwalten');
     print('3 - Kurse anzeigen');
     print('4 - Teilnehmer anzeigen');
     print('0 - Beenden');
     print('');
     stdout.write('Auswahl: ');
-    menue = stdin.readLineSync();
+
+    final menue = stdin.readLineSync()?.trim();
+    print('');
 
     switch (menue) {
       case '1':
         while (true) {
-          menue = null;
-          final kurs = erstelleKurs();
-          cdemy.kursHinzufuegen(kurs);
+          print('Kurse verwalten');
+          print('1 - Kurs hinzufügen');
+          print('2 - Kurs löschen');
+          print('0 - Zurück zum Hauptmenü');
+          print('');
+          stdout.write('Auswahl: ');
 
-          while (menue != '0' && menue != '1') {
-            print('');
-            print('1 - Weiteren Kurs hinzufügen');
-            print('0 - Zurück zum Hauptmenü');
-            stdout.write('Auswahl: ');
-            menue = stdin.readLineSync();
+          final kursMenue = stdin.readLineSync()?.trim();
+          print('');
 
-            if (menue != null) {
-              menue = menue.trim();
-            }
-
-            if (menue == '0') {
-              break;
-            } else if (menue == '1') {
-              break;
-            } else {
-              print('Ungültige Eingabe.');
-              continue;
-            }
-          }
-
-          if (menue == '0') {
+          if (kursMenue == '0') {
             break;
           }
+
+          switch (kursMenue) {
+            case '1':
+              final kurs = erstelleKurs();
+              cdemy.kursHinzufuegen(kurs);
+
+            case '2':
+              if (cdemy.kursListe.isEmpty) {
+                print('Es sind keine Kurse vorhanden.');
+                print('');
+                break;
+              }
+
+              ausgabeKursListe(cdemy.kursListe);
+
+              while (true) {
+                stdout.write('Kursnummer zum Löschen (0 = zurück): ');
+
+                final eingabe = stdin.readLineSync()?.trim();
+                final kursNummer = int.tryParse(eingabe ?? '');
+                print('');
+
+                if (kursNummer == null) {
+                  print('Ungültige Eingabe.');
+                  continue;
+                }
+
+                if (kursNummer == 0) {
+                  break;
+                }
+
+                if (kursNummer < 1 || kursNummer > cdemy.kursListe.length) {
+                  print('Ungültige Kursnummer.');
+                  continue;
+                }
+
+                final geloeschterKurs = cdemy.kursListe.removeAt(
+                  kursNummer - 1,
+                );
+
+                print('Kurs "${geloeschterKurs.kursName}" wurde gelöscht.');
+                print('');
+                break;
+              }
+
+            default:
+              print('Ungültige Eingabe.');
+          }
         }
+
       case '2':
         while (true) {
-          menue = null;
-          final teilnehmer = erstelleTeilnehmer();
+          print('Teilnehmer verwalten');
+          print('1 - Teilnehmer hinzufügen');
+          print('2 - Teilnehmer löschen');
+          print('0 - Zurück zum Hauptmenü');
+          print('');
+          stdout.write('Auswahl: ');
 
-          kurs.teilnehmerHinzufuegen(teilnehmer);
+          final teilnehmerMenue = stdin.readLineSync()?.trim();
+          print('');
 
-          while (menue != '0' && menue != '1') {
-            print('');
-            print('1 - Weiteren Teilnehmer hinzufügen');
-            print('0 - Zurück zum Hauptmenü');
-            stdout.write('Auswahl: ');
-            menue = stdin.readLineSync();
-
-            if (menue != null) {
-              menue = menue.trim();
-            }
-
-            if (menue == '0') {
-              break;
-            } else if (menue == '1') {
-              break;
-            } else {
-              print('Ungültige Eingabe.');
-              continue;
-            }
-          }
-
-          if (menue == '0') {
+          if (teilnehmerMenue == '0') {
             break;
           }
+
+          switch (teilnehmerMenue) {
+            case '1':
+              if (cdemy.kursListe.isEmpty) {
+                print('Kein Kurs vorhanden. Erstelle bitte zuerst einen Kurs.');
+                print('');
+                break;
+              }
+
+              Kurs? ausgewaehlterKurs;
+
+              while (ausgewaehlterKurs == null) {
+                print('Welchem Kurs sollen Teilnehmer hinzugefügt werden?');
+                stdout.write('Gib eine Kursnummer ein (0 = zurück): ');
+
+                final kursNummerEingabe = stdin.readLineSync()?.trim();
+                final kursNummer = int.tryParse(kursNummerEingabe ?? '');
+                print('');
+
+                if (kursNummer == null) {
+                  print('Ungültige Eingabe.');
+                  continue;
+                }
+
+                if (kursNummer == 0) {
+                  break;
+                }
+
+                if (kursNummer < 1 || kursNummer > cdemy.kursListe.length) {
+                  print('Ungültige Kursnummer.');
+                  continue;
+                }
+
+                ausgewaehlterKurs = cdemy.kursListe[kursNummer - 1];
+              }
+
+              if (ausgewaehlterKurs == null) {
+                break;
+              }
+
+              while (true) {
+                final teilnehmer = erstelleTeilnehmer();
+                ausgewaehlterKurs.teilnehmerHinzufuegen(teilnehmer);
+
+                String? auswahl;
+
+                while (auswahl != '0' && auswahl != '1') {
+                  print('1 - Weiteren Teilnehmer hinzufügen');
+                  print('0 - Zurück');
+                  print('');
+                  stdout.write('Auswahl: ');
+
+                  auswahl = stdin.readLineSync()?.trim();
+                  print('');
+
+                  if (auswahl != '0' && auswahl != '1') {
+                    print('Ungültige Eingabe.');
+                  }
+                }
+
+                if (auswahl == '0') {
+                  break;
+                }
+              }
+
+            case '2':
+              if (cdemy.kursListe.isEmpty) {
+                print('Kein Kurs vorhanden.');
+                print('');
+                break;
+              }
+
+              Kurs? ausgewaehlterKurs;
+
+              while (ausgewaehlterKurs == null) {
+                print('Aus welchem Kurs soll ein Teilnehmer gelöscht werden?');
+                stdout.write('Gib eine Kursnummer ein (0 = zurück): ');
+
+                final kursNummerEingabe = stdin.readLineSync()?.trim();
+                final kursNummer = int.tryParse(kursNummerEingabe ?? '');
+                print('');
+
+                if (kursNummer == null) {
+                  print('Ungültige Eingabe.');
+                  continue;
+                }
+
+                if (kursNummer == 0) {
+                  break;
+                }
+
+                if (kursNummer < 1 || kursNummer > cdemy.kursListe.length) {
+                  print('Ungültige Kursnummer.');
+                  continue;
+                }
+
+                ausgewaehlterKurs = cdemy.kursListe[kursNummer - 1];
+              }
+
+              if (ausgewaehlterKurs == null) {
+                break;
+              }
+
+              if (ausgewaehlterKurs.teilnehmerListe.isEmpty) {
+                print('Keine Teilnehmer in diesem Kurs vorhanden.');
+                print('');
+                break;
+              }
+
+              for (
+                int i = 0;
+                i < ausgewaehlterKurs.teilnehmerListe.length;
+                i++
+              ) {
+                final teilnehmer = ausgewaehlterKurs.teilnehmerListe[i];
+
+                print(
+                  '${i + 1} - ${teilnehmer.vorname} ${teilnehmer.nachname}',
+                );
+              }
+
+              print('');
+
+              while (true) {
+                stdout.write('Teilnehmernummer zum Löschen (0 = zurück): ');
+
+                final eingabe = stdin.readLineSync()?.trim();
+                final teilnehmerNummer = int.tryParse(eingabe ?? '');
+                print('');
+
+                if (teilnehmerNummer == null) {
+                  print('Ungültige Eingabe.');
+                  continue;
+                }
+
+                if (teilnehmerNummer == 0) {
+                  break;
+                }
+
+                if (teilnehmerNummer < 1 ||
+                    teilnehmerNummer >
+                        ausgewaehlterKurs.teilnehmerListe.length) {
+                  print('Ungültige Teilnehmernummer.');
+                  continue;
+                }
+
+                final geloeschterTeilnehmer = ausgewaehlterKurs.teilnehmerListe
+                    .removeAt(teilnehmerNummer - 1);
+
+                print(
+                  '${geloeschterTeilnehmer.vorname} ${geloeschterTeilnehmer.nachname} wurde gelöscht.',
+                );
+                print('');
+                break;
+              }
+
+            default:
+              print('Ungültige Eingabe.');
+          }
         }
+
       case '3':
+        if (cdemy.kursListe.isEmpty) {
+          print('Es sind noch keine Kurse vorhanden.');
+          print('');
+          break;
+        }
+
         ausgabeKursListe(cdemy.kursListe);
+
       case '4':
-        ausgabeTeilnehmerListe(kurs.teilnehmerListe);
+        if (cdemy.kursListe.isEmpty) {
+          print('Kein Kurs vorhanden.');
+          print('');
+          break;
+        }
+
+        Kurs? ausgewaehlterKurs;
+
+        while (ausgewaehlterKurs == null) {
+          print('Von welchem Kurs sollen die Teilnehmer angezeigt werden?');
+          stdout.write('Gib eine Kursnummer ein (0 = zurück): ');
+
+          final kursNummerEingabe = stdin.readLineSync()?.trim();
+          final kursNummer = int.tryParse(kursNummerEingabe ?? '');
+          print('');
+
+          if (kursNummer == null) {
+            print('Ungültige Eingabe.');
+            continue;
+          }
+
+          if (kursNummer == 0) {
+            break;
+          }
+
+          if (kursNummer < 1 || kursNummer > cdemy.kursListe.length) {
+            print('Ungültige Kursnummer.');
+            continue;
+          }
+
+          ausgewaehlterKurs = cdemy.kursListe[kursNummer - 1];
+        }
+
+        if (ausgewaehlterKurs == null) {
+          break;
+        }
+
+        ausgabeTeilnehmerListe(ausgewaehlterKurs.teilnehmerListe);
+
       case '0':
-        break;
+        return;
+
       default:
         print('Ungültige Eingabe.');
+        print('');
     }
   }
 }
 
 void ausgabeKursListe(List<Kurs> kursListe) {
   for (int i = 0; i < kursListe.length; i++) {
-    print('Kursname: ${kursListe[i].kursName}');
+    print('Kursname: ${i + 1} - ${kursListe[i].kursName}');
     print('Kursdauer: ${kursListe[i].kursDauerMonate} Monate');
     print('Teilnehmeranzahl: ${kursListe[i].teilnehmerListe.length}');
     print('');
@@ -106,6 +331,12 @@ void ausgabeKursListe(List<Kurs> kursListe) {
 }
 
 void ausgabeTeilnehmerListe(List<Teilnehmer> teilnehmer) {
+  if (teilnehmer.isEmpty) {
+    print('Keine Teilnehmer in diesem Kurs vorhanden.');
+    print('');
+    return;
+  }
+
   for (int i = 0; i < teilnehmer.length; i++) {
     print('Vorname: ${teilnehmer[i].vorname}');
     print('Nachname: ${teilnehmer[i].nachname}');
@@ -115,20 +346,24 @@ void ausgabeTeilnehmerListe(List<Teilnehmer> teilnehmer) {
       Geschlecht.m => 'männlich',
       Geschlecht.d => 'divers',
     };
+
     print('Geschlecht: $geschlecht');
 
     final geburtsdatum = teilnehmer[i].geburtsdatum;
     print(
       'Geburtsdatum: ${geburtsdatum.day.toString().padLeft(2, '0')}.${geburtsdatum.month.toString().padLeft(2, '0')}.${geburtsdatum.year}',
     );
+
     print('Alter: ${berechneAlter(teilnehmer[i])}');
 
     if (teilnehmer[i].abschlussnote != null) {
       print('Abschlussnote: ${teilnehmer[i].abschlussnote}');
     }
+
     print(
       'Zutritts-ID: ${teilnehmer[i].zutrittsberechtigung.zutrittsberechtigungsId}',
     );
+
     print('');
   }
 }

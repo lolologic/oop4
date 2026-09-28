@@ -1,10 +1,6 @@
 import 'dart:math';
 
-enum Geschlecht {
-  w,
-  m,
-  d
-}
+enum Geschlecht { w, m, d }
 
 class Teilnehmer {
   String vorname;
@@ -26,5 +22,6 @@ class Teilnehmer {
 class Zutrittsberechtigung {
   int zutrittsberechtigungsId;
 
-  Zutrittsberechtigung() : zutrittsberechtigungsId = Random().nextInt(999999999);
+  Zutrittsberechtigung()
+    : zutrittsberechtigungsId = Random().nextInt(999999999);
 }
